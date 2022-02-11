@@ -2,7 +2,7 @@ version: '3'
 services:
 
   wombat:
-    image: erlangsolutions/wombatoam:3.8.8
+    image: erlangsolutions/wombatoam:3.8.9
     hostname: wombat
     container_name: wombat
     ports:
@@ -46,7 +46,7 @@ services:
     command: bash -c "export IP=$$(hostname -I | awk '{print $$1}') && erl -name erlang@$$IP -setcookie secretcookie -noshell"
 
   mim1:
-    image: mongooseim/mongooseim:5.0.0
+    image: mongooseim/mongooseim:4.2.0
     hostname: mongooseim-1
     container_name: mongooseim-1
     ports:
@@ -54,6 +54,17 @@ services:
       - "5269:5269"
       - "5280:5280"
       - "9100:9100"
+
+  phoenix:  
+    image: dali32/phoenix
+    command: iex --name app@phoenix.${RMQ_HOST} --cookie a -S mix phoenix.server
+    hostname: phoenix.${RMQ_HOST}
+    container_name: phoenix.${RMQ_HOST}
+    environment:
+      - PORT=4000
+    ports:
+      - "4000:4000"
+
 
   grafana:
     image: kamon/grafana_graphite
